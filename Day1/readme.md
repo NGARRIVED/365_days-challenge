@@ -14,7 +14,7 @@ On Day 1, we are creating **universal login and signup pages** that can be seaml
 - **Responsive Design**: Works across different screen sizes
 
 ## Technologies Used
-- **Frontend**: HTML, CSS, JavaScript
+- **Frontend**: React , css , anime.js , lenis (for smooth scrolling)
 - **Database**: SQLite
 - **Architecture**: Modular, backend-integration ready
 
