@@ -1,0 +1,8 @@
+Flask
+Flask-SQLAlchemy
+Flask-Bcrypt
+Flask-Limiter
+PyJWT
+pydantic
+psycopg2-binary
+python-dotenv
