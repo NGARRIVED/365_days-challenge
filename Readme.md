@@ -14,6 +14,19 @@ This is a **365 Days Challenge** repository - a personal coding challenge projec
   - Implementation files (varies by language/technology used)
   - Any supporting assets or documentation
 
+
+## Week 1 Project List
+
+| Day  | Project Topic           |
+|------|------------------------|
+| Day 3| Weather Dashboard      |
+| Day 4| To-Do List App         |
+| Day 5| URL Shortener          |
+| Day 6| Markdown Previewer     |
+| Day 7| Expense Tracker        |
+| Day 8| Image Gallery          |
+| Day 9| Notes App              |
+
 ## Common Development Commands
 
 ### Repository Management
