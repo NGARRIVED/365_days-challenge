@@ -74,7 +74,75 @@ h1 {
 .weather-info p {
     font-size: 1.1rem;
     margin: 0.5rem 0;
+    text-transform: capitalize;
 }
+
+.extra-info {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 1.5rem;
+    background-color: rgba(0, 0, 0, 0.05);
+    padding: 1rem;
+    border-radius: 10px;
+}
+
+.extra-info p {
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+.forecast-container {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 2rem;
+    width: 100%;
+}
+
+.forecast-day {
+    background-color: rgba(0, 0, 0, 0.05);
+    padding: 1rem 0.5rem;
+    border-radius: 10px;
+    width: 18%;
+    text-align: center;
+}
+
+.forecast-day p {
+    margin: 0.2rem 0;
+    font-size: 0.9rem;
+}
+
+.forecast-day .forecast-icon {
+    width: 50px;
+    height: 50px;
+}
+
+
+.forecast-container {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 2rem;
+    width: 100%;
+}
+
+.forecast-day {
+    background-color: rgba(0, 0, 0, 0.05);
+    padding: 1rem 0.5rem;
+    border-radius: 10px;
+    width: 18%;
+    text-align: center;
+}
+
+.forecast-day p {
+    margin: 0.2rem 0;
+    font-size: 0.9rem;
+}
+
+.forecast-day .forecast-icon {
+    width: 50px;
+    height: 50px;
+}
+
+
 
 .weather-icon {
     width: 100px;

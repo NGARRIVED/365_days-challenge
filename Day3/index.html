@@ -16,11 +16,17 @@
         <div id="loader" class="loader" style="display: none;"></div>
         <div id="error-message" class="error-message" style="display: none;"></div>
         <div class="weather-info" style="display: none;">
+            <img id="weather-icon" class="weather-icon" src="" alt="Weather Icon">
             <h2 id="city-name"></h2>
             <p id="temperature"></p>
             <p id="description"></p>
-            <p id="humidity"></p>
+            <div class="extra-info">
+                <p id="feels-like"></p>
+                <p id="humidity"></p>
+                <p id="wind-speed"></p>
+            </div>
         </div>
+        <div class="forecast-container"></div>
     </div>
     <script src="config.js"></script>
     <script src="script.js"></script>

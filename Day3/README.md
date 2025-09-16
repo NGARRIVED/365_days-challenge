@@ -1,29 +1,22 @@
-# Day 3: Weather Dashboard
+# Day 4: Weather Dashboard - Feature Enhancements
 
 ## Project Overview
-A simple weather dashboard that fetches and displays weather data for a given city using a public API (e.g., OpenWeatherMap).
+Building on the Day 3 project, this session focuses on adding several new features to the Weather Dashboard, all within the limits of the free OpenWeatherMap API.
 
-## Features
-- Search for weather by city name
-- Display current temperature, humidity, and weather conditions
-- Responsive UI
+## New Features
+- **Geolocation**: Automatically fetch weather for the user's current location on page load.
+- **Weather Icons**: Display dynamic icons that change based on the weather conditions.
+- **Enhanced Data**: Show "feels like" temperature and wind speed.
+- **5-Day Forecast**: Provide a daily forecast for the next five days.
 
 ## How to Run
-1. Clone the repository.
-2. Install dependencies (if any).
-3. Run the app and enter a city name to view the weather.
+1.  Copy the files from the `Day3` directory into this `Day4` directory.
+2.  Open `index.html` in your browser.
+3.  Allow location access when prompted to see your local weather automatically.
 
 ## API Reference
-- [OpenWeatherMap API](https://openweathermap.org/api)
-
-## Example
-![Weather Dashboard Example](public/example.png)
-
----
-
-## Next Steps
-- Add support for 5-day forecast
-- Save recent searches
+- [OpenWeatherMap One Call API 1.0 (for forecast)](https://openweathermap.org/api/one-call-api)
+- [OpenWeatherMap Geocoding API](https://openweathermap.org/api/geocoding-api)
 
 ---
 
