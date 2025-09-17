@@ -1,0 +1,8 @@
+# Python virtual environment
+backend/venv/
+
+# Python cache files
+backend/__pycache__/
+
+# SQLite database file
+backend/todos.db
