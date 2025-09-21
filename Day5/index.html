@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 5 - URL Shortener</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <div class="url-shortener">
+            <h2><i class="fas fa-link"></i> URL Shortener</h2>
+            <p>Enter a long URL below to create a shortened version</p>
+            
+            <div class="input-section">
+                <input type="url" id="long-url" placeholder="https://example.com/very-long-url">
+                <button id="shorten-btn">
+                    <i class="fas fa-compress-alt"></i> Shorten URL
+                </button>
+            </div>
+
+            <div id="loading" class="loading" style="display: none;">
+                <div class="spinner"></div>
+                <p>Creating short URL...</p>
+            </div>
+
+            <div id="result" class="result" style="display: none;">
+                <h3>Your shortened URL:</h3>
+                <div class="url-container">
+                    <input type="text" id="short-url" readonly>
+                    <button id="copy-btn" title="Copy to clipboard">
+                        <i class="fas fa-copy"></i>
+                    </button>
+                </div>
+                <div class="actions">
+                    <button id="visit-btn" class="visit-btn">
+                        <i class="fas fa-external-link-alt"></i> Visit URL
+                    </button>
+                    <button id="new-btn" class="new-btn">
+                        <i class="fas fa-plus"></i> Shorten Another
+                    </button>
+                </div>
+            </div>
+
+            <div id="error" class="error" style="display: none;">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span id="error-message"></span>
+            </div>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>

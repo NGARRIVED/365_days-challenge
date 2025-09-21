@@ -1,0 +1,135 @@
+# 365 Days Challenge - Main Project .gitignore
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environments (all days)
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+.venv/
+Day*/backend/venv/
+Day*/backend/env/
+Day*/venv/
+Day*/env/
+
+# Database Files (all days)
+*.db
+*.sqlite
+*.sqlite3
+Day*/backend/*.db
+Day*/backend/*.sqlite
+Day*/backend/*.sqlite3
+Day*/urls.db
+Day*/todos.db
+Day*/app.db
+
+# Flask Applications
+instance/
+.webassets-cache
+.env
+.flaskenv
+
+# Node.js (for any React/Next.js days)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.next/
+.nuxt/
+
+# IDE and Editor Files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+Day*/logs/
+Day*/backend/logs/
+
+# Environment Variables
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+Day*/.env
+Day*/backend/.env
+
+# Coverage reports
+htmlcov/
+.coverage
+.coverage.*
+coverage.xml
+*.cover
+.hypothesis/
+.pytest_cache/
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.backup
+
+# API Keys and Sensitive Data
+api_keys.txt
+.secrets/
+config/secrets.py
+Day*/config/secrets.py
+
+# Project specific temporary files
+uploads/
+results/
+bulk_results/
+Day*/uploads/
+Day*/results/
+Day*/bulk_results/
+
+# QR Code generated files (optional)
+qr_codes/
+Day*/qr_codes/
+
+# Build artifacts
+dist/
+build/
+
+# Documentation builds
+docs/_build/
+docs/build/

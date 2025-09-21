@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL Shortener Pro - Day 5 Enhanced</title>
+    <link rel="stylesheet" href="style-enhanced.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-link"></i> URL Shortener Pro</h1>
+            <p>Create short links and track their performance with advanced analytics</p>
+        </header>
+
+        <nav class="tabs">
+            <button class="tab-btn active" onclick="showTab('shorten')">
+                <i class="fas fa-compress-alt"></i> Shorten URL
+            </button>
+            <button class="tab-btn" onclick="showTab('bulk')">
+                <i class="fas fa-layer-group"></i> Bulk Process
+            </button>
+            <button class="tab-btn" onclick="showTab('analytics')">
+                <i class="fas fa-chart-bar"></i> Analytics
+            </button>
+            <button class="tab-btn" onclick="showTab('manage')">
+                <i class="fas fa-cogs"></i> Manage URLs
+            </button>
+        </nav>
+
+        <!-- Shorten URL Tab -->
+        <div id="shorten-tab" class="tab-content active">
+            <div class="input-section">
+                <input type="url" id="urlInput" placeholder="Enter your long URL here..." required>
+                <input type="text" id="customAlias" placeholder="Custom alias (optional)" maxlength="20">
+                <select id="expirationSelect">
+                    <option value="">No Expiration</option>
+                    <option value="1">1 Day</option>
+                    <option value="7">1 Week</option>
+                    <option value="30">1 Month</option>
+                    <option value="90">3 Months</option>
+                    <option value="365">1 Year</option>
+                </select>
+                <button onclick="shortenUrl()">
+                    <i class="fas fa-compress-alt"></i> Shorten URL
+                </button>
+            </div>
+            
+            <div class="alias-info">
+                <p><i class="fas fa-info-circle"></i> Custom alias must be 3-20 characters (letters, numbers, hyphens, underscores only)</p>
+                <p><i class="fas fa-clock"></i> Set an expiration date to automatically disable the link after a specific time</p>
+            </div>
+
+            <div id="loading" class="loading" style="display: none;">
+                <div class="spinner"></div>
+                <p>Creating short URL...</p>
+            </div>
+
+            <div id="result" class="result-section" style="display: none;">
+                <h3>Your shortened URL:</h3>
+                <div class="url-result">
+                    <input type="text" id="shortUrl" readonly>
+                    <button onclick="copyUrl()">
+                        <i class="fas fa-copy"></i> Copy
+                    </button>
+                    <button onclick="generateQRCode()" class="btn-qr">
+                        <i class="fas fa-qrcode"></i> QR Code
+                    </button>
+                </div>
+                <div class="url-stats">
+                    <span><i class="fas fa-calendar"></i> Created: <span id="createdDate"></span></span>
+                    <span><i class="fas fa-eye"></i> Clicks: <span id="clickCount">0</span></span>
+                </div>
+                
+                <div id="qr-container" class="qr-container" style="display: none;">
+                    <h4>QR Code for easy sharing:</h4>
+                    <div class="qr-code-display">
+                        <img id="qrCodeImage" alt="QR Code">
+                        <div class="qr-actions">
+                            <button onclick="downloadQRCode()">
+                                <i class="fas fa-download"></i> Download
+                            </button>
+                            <button onclick="shareQRCode()">
+                                <i class="fas fa-share"></i> Share
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bulk Process Tab -->
+        <div id="bulk-tab" class="tab-content">
+            <div class="bulk-header">
+                <h2><i class="fas fa-layer-group"></i> Bulk URL Processing</h2>
+                <p>Process multiple URLs at once using text input or CSV file upload</p>
+            </div>
+
+            <div class="bulk-methods">
+                <div class="method-card active" id="text-method" onclick="switchBulkMethod('text')">
+                    <i class="fas fa-edit"></i>
+                    <h3>Text Input</h3>
+                    <p>Paste multiple URLs (one per line)</p>
+                </div>
+                <div class="method-card" id="csv-method" onclick="switchBulkMethod('csv')">
+                    <i class="fas fa-file-csv"></i>
+                    <h3>CSV Upload</h3>
+                    <p>Upload a CSV file with URLs</p>
+                </div>
+            </div>
+
+            <!-- Text Input Method -->
+            <div id="text-input-section" class="bulk-section">
+                <textarea id="bulkUrls" placeholder="Enter URLs here (one per line):
+https://example.com/page1
+https://example.com/page2
+https://example.com/page3" rows="8"></textarea>
+                <button onclick="processBulkUrls()">
+                    <i class="fas fa-play"></i> Process URLs
+                </button>
+            </div>
+
+            <!-- CSV Upload Method -->
+            <div id="csv-input-section" class="bulk-section" style="display: none;">
+                <div class="file-upload">
+                    <input type="file" id="csvFile" accept=".csv" onchange="handleCsvFile(event)">
+                    <label for="csvFile">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <span>Choose CSV file or drag and drop</span>
+                    </label>
+                </div>
+                <div class="csv-info">
+                    <p><i class="fas fa-info-circle"></i> CSV format: First column should contain URLs</p>
+                    <p><i class="fas fa-download"></i> <a href="#" onclick="downloadSampleCsv()">Download sample CSV</a></p>
+                </div>
+                <button id="processCsvBtn" onclick="processCsvUrls()" style="display: none;">
+                    <i class="fas fa-play"></i> Process CSV URLs
+                </button>
+            </div>
+
+            <!-- Bulk Processing Results -->
+            <div id="bulk-results" class="bulk-results" style="display: none;">
+                <h3>Processing Results</h3>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                    <span class="progress-text" id="progressText">0%</span>
+                </div>
+                <div id="bulk-status" class="bulk-status"></div>
+                <div id="bulk-output" class="bulk-output"></div>
+                <button onclick="downloadResults()" id="downloadBtn" style="display: none;">
+                    <i class="fas fa-download"></i> Download Results
+                </button>
+            </div>
+        </div>
+
+        <!-- Analytics Tab -->
+        <div id="analytics-tab" class="tab-content">
+            <div class="analytics-header">
+                <h2><i class="fas fa-chart-line"></i> Analytics Dashboard</h2>
+                <button onclick="refreshAnalytics()">
+                    <i class="fas fa-sync-alt"></i> Refresh
+                </button>
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-link"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Total URLs</h3>
+                        <div class="stat-number" id="totalUrls">0</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-mouse-pointer"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Total Clicks</h3>
+                        <div class="stat-number" id="totalClicks">0</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-chart-bar"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Average Clicks</h3>
+                        <div class="stat-number" id="avgClicks">0</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-trophy"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Top Performer</h3>
+                        <div class="stat-number" id="topPerformer">-</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <canvas id="clicksChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Manage URLs Tab -->
+        <div id="manage-tab" class="tab-content">
+            <div class="manage-header">
+                <h2><i class="fas fa-list"></i> Manage URLs</h2>
+                <button onclick="loadUrlList()">
+                    <i class="fas fa-sync-alt"></i> Refresh List
+                </button>
+            </div>
+            <div id="urlList" class="url-list">
+                <div class="loading-urls">
+                    <i class="fas fa-spinner fa-spin"></i> Loading URLs...
+                </div>
+            </div>
+        </div>
+
+        <div id="notification" class="notification"></div>
+    </div>
+
+    <script src="script-enhanced.js"></script>
+</body>
+</html>
