@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 7 - Expense Tracker</title>
+    
+    <!-- CSS Stylesheets -->
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation Header -->
+    <header class="navbar">
+        <div class="nav-brand">
+            <i class="fas fa-wallet"></i>
+            <h1>Expense Tracker</h1>
+        </div>
+        
+        <nav class="nav-controls">
+            <button id="themeToggle" class="nav-btn" title="Toggle Theme">
+                <i class="fas fa-moon"></i>
+            </button>
+            
+            <button id="exportBtn" class="nav-btn" title="Export Data">
+                <i class="fas fa-download"></i>
+                <span>Export</span>
+            </button>
+            
+            <button id="settingsBtn" class="nav-btn" title="Settings">
+                <i class="fas fa-cog"></i>
+                <span>Settings</span>
+            </button>
+        </nav>
+    </header>
+
+    <!-- Main Application -->
+    <main class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <nav class="sidebar-nav">
+                <ul class="nav-list">
+                    <li class="nav-item">
+                        <button class="nav-link active" data-page="dashboard">
+                            <i class="fas fa-chart-pie"></i>
+                            <span>Dashboard</span>
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link" data-page="transactions">
+                            <i class="fas fa-list"></i>
+                            <span>Transactions</span>
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link" data-page="analytics">
+                            <i class="fas fa-chart-line"></i>
+                            <span>Analytics</span>
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link" data-page="budgets">
+                            <i class="fas fa-piggy-bank"></i>
+                            <span>Budgets</span>
+                        </button>
+                    </li>
+                </ul>
+            </nav>
+            
+            <!-- Quick Stats -->
+            <div class="sidebar-stats">
+                <h3>This Month</h3>
+                <div class="stat-item">
+                    <span class="stat-label">Income</span>
+                    <span class="stat-value income" id="sidebarIncome">₹0.00</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Expenses</span>
+                    <span class="stat-value expense" id="sidebarExpenses">₹0.00</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Balance</span>
+                    <span class="stat-value" id="sidebarBalance">₹0.00</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <div class="main-content">
+            <!-- Dashboard Page -->
+            <section id="dashboardPage" class="page active">
+                <div class="page-header">
+                    <h2>Dashboard</h2>
+                    <button id="addTransactionBtn" class="btn btn-primary">
+                        <i class="fas fa-plus"></i>
+                        Add Transaction
+                    </button>
+                </div>
+
+                <!-- Summary Cards -->
+                <div class="summary-cards">
+                    <div class="summary-card income-card">
+                        <div class="card-icon">
+                            <i class="fas fa-arrow-up"></i>
+                        </div>
+                        <div class="card-content">
+                            <h3>Total Income</h3>
+                            <p class="card-amount" id="totalIncome">₹0.00</p>
+                            <span class="card-subtitle">This month</span>
+                        </div>
+                    </div>
+                    
+                    <div class="summary-card expense-card">
+                        <div class="card-icon">
+                            <i class="fas fa-arrow-down"></i>
+                        </div>
+                        <div class="card-content">
+                            <h3>Total Expenses</h3>
+                            <p class="card-amount" id="totalExpenses">₹0.00</p>
+                            <span class="card-subtitle">This month</span>
+                        </div>
+                    </div>
+                    
+                    <div class="summary-card balance-card">
+                        <div class="card-icon">
+                            <i class="fas fa-wallet"></i>
+                        </div>
+                        <div class="card-content">
+                            <h3>Current Balance</h3>
+                            <p class="card-amount" id="currentBalance">₹0.00</p>
+                            <span class="card-subtitle">Available now</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Section -->
+                <div class="charts-grid">
+                    <div class="chart-container">
+                        <h3>Expense Distribution</h3>
+                        <canvas id="expenseChart"></canvas>
+                    </div>
+                    
+                    <div class="chart-container">
+                        <h3>Monthly Trends</h3>
+                        <canvas id="trendsChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Recent Transactions -->
+                <div class="recent-transactions">
+                    <div class="section-header">
+                        <h3>Recent Transactions</h3>
+                        <button class="btn btn-secondary" id="viewAllBtn">View All</button>
+                    </div>
+                    <div class="transactions-list" id="recentTransactionsList">
+                        <!-- Recent transactions will be populated here -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Transactions Page -->
+            <section id="transactionsPage" class="page">
+                <div class="page-header">
+                    <h2>All Transactions</h2>
+                    <div class="header-actions">
+                        <button id="addTransactionBtn2" class="btn btn-primary">
+                            <i class="fas fa-plus"></i>
+                            Add Transaction
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Filters -->
+                <div class="filters-panel">
+                    <div class="filter-group">
+                        <label for="dateFilter">Date Range</label>
+                        <select id="dateFilter" class="filter-select">
+                            <option value="all">All Time</option>
+                            <option value="today">Today</option>
+                            <option value="week">This Week</option>
+                            <option value="month">This Month</option>
+                            <option value="year">This Year</option>
+                            <option value="custom">Custom Range</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label for="categoryFilter">Category</label>
+                        <select id="categoryFilter" class="filter-select">
+                            <option value="all">All Categories</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label for="typeFilter">Type</label>
+                        <select id="typeFilter" class="filter-select">
+                            <option value="all">All Types</option>
+                            <option value="income">Income</option>
+                            <option value="expense">Expense</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label for="searchFilter">Search</label>
+                        <input type="text" id="searchFilter" class="filter-input" placeholder="Search transactions...">
+                    </div>
+                </div>
+
+                <!-- Transactions Table -->
+                <div class="transactions-table-container">
+                    <table class="transactions-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Description</th>
+                                <th>Category</th>
+                                <th>Type</th>
+                                <th>Amount</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="transactionsTableBody">
+                            <!-- Transactions will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                <div class="pagination" id="transactionsPagination">
+                    <!-- Pagination controls will be generated here -->
+                </div>
+            </section>
+
+            <!-- Analytics Page -->
+            <section id="analyticsPage" class="page">
+                <div class="page-header">
+                    <h2>Analytics</h2>
+                    <div class="date-range-selector">
+                        <select id="analyticsDateRange">
+                            <option value="month">This Month</option>
+                            <option value="quarter">This Quarter</option>
+                            <option value="year">This Year</option>
+                            <option value="all">All Time</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="analytics-grid">
+                    <div class="chart-container large">
+                        <h3>Spending by Category</h3>
+                        <canvas id="categoryChart"></canvas>
+                    </div>
+                    
+                    <div class="chart-container">
+                        <h3>Income vs Expenses</h3>
+                        <canvas id="incomeExpenseChart"></canvas>
+                    </div>
+                    
+                    <div class="analytics-stats">
+                        <h3>Key Insights</h3>
+                        <div class="insight-item">
+                            <span class="insight-label">Top Spending Category</span>
+                            <span class="insight-value" id="topCategory">-</span>
+                        </div>
+                        <div class="insight-item">
+                            <span class="insight-label">Average Daily Spending</span>
+                            <span class="insight-value" id="avgDaily">₹0.00</span>
+                        </div>
+                        <div class="insight-item">
+                            <span class="insight-label">Total Transactions</span>
+                            <span class="insight-value" id="totalTransactions">0</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Budgets Page -->
+            <section id="budgetsPage" class="page">
+                <div class="page-header">
+                    <h2>Budget Management</h2>
+                    <button id="addBudgetBtn" class="btn btn-primary">
+                        <i class="fas fa-plus"></i>
+                        Add Budget
+                    </button>
+                </div>
+
+                <div class="budgets-grid" id="budgetsContainer">
+                    <!-- Budget cards will be populated here -->
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Add Transaction Modal -->
+    <div id="transactionModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add Transaction</h3>
+                <button class="modal-close" id="closeTransactionModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <form id="transactionForm" class="modal-body">
+                <div class="form-group">
+                    <label for="transactionType">Type</label>
+                    <select id="transactionType" required>
+                        <option value="expense">Expense</option>
+                        <option value="income">Income</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="transactionAmount">Amount</label>
+                    <input type="number" id="transactionAmount" step="0.01" min="0" required placeholder="0.00">
+                </div>
+                
+                <div class="form-group">
+                    <label for="transactionCategory">Category</label>
+                    <select id="transactionCategory" required>
+                        <option value="">Select Category</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="transactionDescription">Description</label>
+                    <input type="text" id="transactionDescription" placeholder="Enter description" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="transactionDate">Date</label>
+                    <input type="date" id="transactionDate" required>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" id="cancelTransaction">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Add Transaction</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Budget Modal -->
+    <div id="budgetModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Set Budget</h3>
+                <button class="modal-close" id="closeBudgetModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <form id="budgetForm" class="modal-body">
+                <div class="form-group">
+                    <label for="budgetCategory">Category</label>
+                    <select id="budgetCategory" required>
+                        <option value="">Select Category</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="budgetAmount">Monthly Budget</label>
+                    <input type="number" id="budgetAmount" step="0.01" min="0" required placeholder="0.00">
+                </div>
+                
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" id="cancelBudget">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Set Budget</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Settings</h3>
+                <button class="modal-close" id="closeSettingsModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="modal-body">
+                <div class="settings-section">
+                    <h4>Categories</h4>
+                    <div class="categories-list" id="categoriesList">
+                        <!-- Categories will be populated here -->
+                    </div>
+                    <div class="add-category">
+                        <input type="text" id="newCategoryName" placeholder="New category name">
+                        <select id="newCategoryType">
+                            <option value="expense">Expense</option>
+                            <option value="income">Income</option>
+                        </select>
+                        <button id="addCategoryBtn" class="btn btn-primary">Add</button>
+                    </div>
+                </div>
+                
+                <div class="settings-section">
+                    <h4>Data Management</h4>
+                    <div class="data-actions">
+                        <button id="exportDataBtn" class="btn btn-secondary">
+                            <i class="fas fa-download"></i>
+                            Export All Data
+                        </button>
+                        <button id="importDataBtn" class="btn btn-secondary">
+                            <i class="fas fa-upload"></i>
+                            Import Data
+                        </button>
+                        <button id="clearDataBtn" class="btn btn-danger">
+                            <i class="fas fa-trash"></i>
+                            Clear All Data
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="notification" class="notification">
+        <span id="notificationMessage"></span>
+        <button id="notificationClose">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+
+    <!-- Hidden File Input for Import -->
+    <input type="file" id="fileInput" accept=".json,.csv" style="display: none;">
+
+    <!-- Chart.js Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.min.js"></script>
+    
+    <!-- Application Scripts -->
+    <script src="database/config.js"></script>
+    <script src="database/service.js"></script>
+    <script src="charts.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
