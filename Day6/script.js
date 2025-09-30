@@ -21,6 +21,10 @@ const elements = {
     openBtn: document.getElementById('openBtn'),
     saveBtn: document.getElementById('saveBtn'),
     exportBtn: document.getElementById('exportBtn'),
+    exportHtmlBtn: document.getElementById('exportHtmlBtn'),
+    exportPdfBtn: document.getElementById('exportPdfBtn'),
+    exportDocxBtn: document.getElementById('exportDocxBtn'),
+    exportDropdown: document.querySelector('.export-dropdown'),
     themeBtn: document.getElementById('themeBtn'),
     helpBtn: document.getElementById('helpBtn'),
     
@@ -94,7 +98,10 @@ function setupEventListeners() {
     elements.newBtn.addEventListener('click', createNewFile);
     elements.openBtn.addEventListener('click', openFile);
     elements.saveBtn.addEventListener('click', saveFile);
-    elements.exportBtn.addEventListener('click', exportFile);
+    elements.exportBtn.addEventListener('click', toggleExportDropdown);
+    elements.exportHtmlBtn.addEventListener('click', exportHtmlFile);
+    elements.exportPdfBtn.addEventListener('click', exportPdfFile);
+    elements.exportDocxBtn.addEventListener('click', exportDocxFile);
     elements.themeBtn.addEventListener('click', toggleTheme);
     elements.helpBtn.addEventListener('click', showHelpModal);
     
@@ -130,6 +137,13 @@ function setupEventListeners() {
     
     // File input event
     elements.fileInput.addEventListener('change', handleFileUpload);
+    
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!elements.exportDropdown.contains(e.target)) {
+            closeExportDropdown();
+        }
+    });
     
     // Resizer events
     elements.resizer.addEventListener('mousedown', startResize);
@@ -367,12 +381,159 @@ function saveFile() {
     showNotification('File saved successfully');
 }
 
-function exportFile() {
+// === EXPORT DROPDOWN ===
+function toggleExportDropdown() {
+    elements.exportDropdown.classList.toggle('active');
+}
+
+function closeExportDropdown() {
+    elements.exportDropdown.classList.remove('active');
+}
+
+function exportHtmlFile() {
     const htmlContent = generateExportHTML();
     const filename = (currentFile || 'markdown-document').replace(/\.md$/, '') + '.html';
     
     downloadFile(htmlContent, filename, 'text/html');
     showNotification('File exported as HTML');
+    closeExportDropdown();
+}
+
+async function exportPdfFile() {
+    try {
+        showNotification('Generating PDF...', 'info');
+        
+        // Get the preview content
+        const previewElement = elements.preview;
+        
+        // Use html2canvas to render the preview as canvas
+        const canvas = await html2canvas(previewElement, {
+            scale: 2,
+            useCORS: true,
+            allowTaint: true,
+            backgroundColor: '#ffffff',
+            width: previewElement.scrollWidth,
+            height: previewElement.scrollHeight
+        });
+        
+        const imgData = canvas.toDataURL('image/png');
+        
+        // Create PDF with jsPDF
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF('p', 'mm', 'a4');
+        
+        const imgWidth = 210; // A4 width in mm
+        const pageHeight = 295; // A4 height in mm
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+        let heightLeft = imgHeight;
+        let position = 0;
+        
+        // Add first page
+        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+        
+        // Add additional pages if content is long
+        while (heightLeft >= 0) {
+            position = heightLeft - imgHeight;
+            pdf.addPage();
+            pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+            heightLeft -= pageHeight;
+        }
+        
+        const filename = (currentFile || 'markdown-document').replace(/\.md$/, '') + '.pdf';
+        pdf.save(filename);
+        
+        showNotification('PDF exported successfully');
+        closeExportDropdown();
+    } catch (error) {
+        console.error('PDF export failed:', error);
+        showNotification('Failed to export PDF', 'error');
+        closeExportDropdown();
+    }
+}
+
+async function exportDocxFile() {
+    try {
+        showNotification('Generating Word document...', 'info');
+        
+        // Create a simple RTF document that Word can open
+        const markdownContent = elements.editor.value;
+        const rtfContent = convertMarkdownToRTF(markdownContent);
+        
+        // Create blob and download
+        const blob = new Blob([rtfContent], { type: 'application/rtf' });
+        const filename = (currentFile || 'markdown-document').replace(/\.md$/, '') + '.rtf';
+        
+        // Create download link
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        
+        showNotification('Word document (RTF) exported successfully');
+        closeExportDropdown();
+    } catch (error) {
+        console.error('DOCX export failed:', error);
+        showNotification('Failed to export Word document', 'error');
+        closeExportDropdown();
+    }
+}
+
+function convertMarkdownToRTF(markdown) {
+    // RTF header
+    let rtf = '{\\rtf1\\ansi\\deff0 {\\fonttbl {\\f0 Times New Roman;}}';
+    
+    const lines = markdown.split('\n');
+    
+    for (const line of lines) {
+        if (line.trim() === '') {
+            rtf += '\\par ';
+            continue;
+        }
+        
+        // Headers
+        if (line.startsWith('# ')) {
+            rtf += `\\fs32\\b ${escapeRTF(line.substring(2))}\\b0\\fs24\\par `;
+        } else if (line.startsWith('## ')) {
+            rtf += `\\fs28\\b ${escapeRTF(line.substring(3))}\\b0\\fs24\\par `;
+        } else if (line.startsWith('### ')) {
+            rtf += `\\fs26\\b ${escapeRTF(line.substring(4))}\\b0\\fs24\\par `;
+        } else if (line.startsWith('- ') || line.startsWith('* ')) {
+            rtf += `\\bullet\\tab ${escapeRTF(line.substring(2))}\\par `;
+        } else if (/^\d+\.\s/.test(line)) {
+            const match = line.match(/^\d+\.\s(.+)/);
+            if (match) {
+                rtf += `\\tab ${escapeRTF(match[1])}\\par `;
+            }
+        } else {
+            // Regular paragraph with basic formatting
+            let processedLine = line;
+            
+            // Bold text
+            processedLine = processedLine.replace(/\*\*(.*?)\*\*/g, '\\b $1\\b0 ');
+            
+            // Italic text
+            processedLine = processedLine.replace(/\*(.*?)\*/g, '\\i $1\\i0 ');
+            
+            // Code
+            processedLine = processedLine.replace(/`(.*?)`/g, '\\f1 $1\\f0 ');
+            
+            rtf += `${escapeRTF(processedLine)}\\par `;
+        }
+    }
+    
+    rtf += '}';
+    return rtf;
+}
+
+function escapeRTF(text) {
+    return text.replace(/\\/g, '\\\\')
+               .replace(/\{/g, '\\{')
+               .replace(/\}/g, '\\}');
 }
 
 function downloadFile(content, filename, mimeType) {
@@ -775,7 +936,7 @@ function handleGlobalKeydown(e) {
                 break;
             case 'e':
                 e.preventDefault();
-                exportFile();
+                toggleExportDropdown();
                 break;
             case 'b':
                 e.preventDefault();
